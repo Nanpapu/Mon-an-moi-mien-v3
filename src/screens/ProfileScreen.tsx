@@ -16,6 +16,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { ImportButton } from "../components/ImportButton";
+import { RegionService } from "../services/regionService";
 
 export default function ProfileScreen() {
   // HOOKS & STATE
@@ -71,6 +72,19 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleImportData = async () => {
+    try {
+      const success = await RegionService.importDataToFirestore();
+      if (success) {
+        Alert.alert("Thành công", "Đã import dữ liệu vào Firestore");
+      } else {
+        Alert.alert("Lỗi", "Không thể import dữ liệu");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi import dữ liệu");
+    }
+  };
+
   // RENDER
   if (user) {
     return (
@@ -89,7 +103,13 @@ export default function ProfileScreen() {
         </View>
         
         <View style={styles.actionsContainer}>
-          <ImportButton />
+          <TouchableOpacity 
+            style={styles.importButton} 
+            onPress={handleImportData}
+          >
+            <Ionicons name="cloud-upload-outline" size={24} color="white" />
+            <Text style={styles.buttonText}>Import Data</Text>
+          </TouchableOpacity>
           <TouchableOpacity 
             style={styles.logoutButton} 
             onPress={logout}
@@ -348,5 +368,15 @@ const styles = StyleSheet.create({
   switchAuthHighlight: {
     color: '#007AFF',
     fontWeight: 'bold',
+  },
+
+  importButton: {
+    backgroundColor: "#4CAF50",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 15,
   },
 });
