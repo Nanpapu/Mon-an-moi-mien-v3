@@ -40,12 +40,19 @@ export function RecipeCardSkeleton() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
     marginHorizontal: 15,
     marginBottom: 20,
     elevation: 3,
-    overflow: 'hidden'
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
@@ -53,7 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E1E9EE'
   },
   content: {
-    padding: 15
+    padding: 15,
   },
   title: {
     height: 24,

@@ -16,6 +16,7 @@ import { useRecipes } from "../context/RecipeContext";
 import { SearchBar } from "../components/SearchBar";
 import { Image } from 'expo-image';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { RecipeCardSkeleton } from "../components/RecipeCardSkeleton";
 
 export default function MenuScreen() {
   // HOOKS & STATE
@@ -28,6 +29,7 @@ export default function MenuScreen() {
 
   // Thêm vào phần khai báo state
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // COMPUTED VALUES
   // Lọc công thức theo điều kiện tìm kiếm và vùng miền
@@ -77,6 +79,16 @@ export default function MenuScreen() {
       ]
     );
   };
+
+  // Thêm useEffect để giả lập loading
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      await refreshSavedRecipes();
+      setIsLoading(false);
+    };
+    loadData();
+  }, []);
 
   // RENDER
   return (
@@ -130,7 +142,14 @@ export default function MenuScreen() {
         }
       >
         {/* Hiển thị thông báo khi chưa có công thức hoặc không tìm thấy kết quả */}
-        {filteredRecipes.length === 0 ? (
+        {isLoading ? (
+          // Hiển thị 3 skeleton cards khi đang loading
+          <>
+            <RecipeCardSkeleton />
+            <RecipeCardSkeleton />
+            <RecipeCardSkeleton />
+          </>
+        ) : filteredRecipes.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
               {savedRecipes.length === 0
