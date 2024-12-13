@@ -26,6 +26,9 @@ export default function MenuScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
+  // Thêm vào phần khai báo state
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   // COMPUTED VALUES
   // Lọc công thức theo điều kiện tìm kiếm và vùng miền
   const filteredRecipes = useMemo(() => {
@@ -118,7 +121,12 @@ export default function MenuScreen() {
       <ScrollView
         style={styles.recipeList}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={refreshSavedRecipes} />
+          <RefreshControl 
+            refreshing={isRefreshing}
+            onRefresh={refreshSavedRecipes}
+            colors={['#007AFF']}
+            tintColor="#007AFF"
+          />
         }
       >
         {/* Hiển thị thông báo khi chưa có công thức hoặc không tìm thấy kết quả */}

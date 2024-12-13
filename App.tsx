@@ -3,6 +3,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { Animated } from 'react-native';
 
 import MapScreen from "./src/screens/MapScreen";
 import MenuScreen from "./src/screens/MenuScreen";
@@ -33,8 +34,26 @@ export default function App() {
                 } else {
                   iconName = focused ? 'person' : 'person-outline';
                 }
-                return <Ionicons name={iconName} size={size} color={color} />;
+                return (
+                  <Animated.View
+                    style={{
+                      transform: [
+                        {
+                          scale: focused ? 1.2 : 1
+                        }
+                      ]
+                    }}
+                  >
+                    <Ionicons name={iconName} size={size} color={color} />
+                  </Animated.View>
+                );
               },
+              tabBarStyle: {
+                height: 60,
+                paddingBottom: 5
+              },
+              tabBarActiveTintColor: '#007AFF',
+              tabBarInactiveTintColor: 'gray'
             })}
           >
             {/* Định nghĩa các màn hình trong tab */}

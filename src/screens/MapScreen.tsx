@@ -10,6 +10,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Animated,
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region as MapRegion } from "react-native-maps";
 import { Recipe, Region } from "../types";
@@ -134,6 +135,25 @@ export default function MapScreen({ navigation }: { navigation: any }) {
     }, 1000);
   };
 
+  // Thêm state và useEffect cho animation
+  const slideAnim = useRef(new Animated.Value(500)).current;
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        useNativeDriver: true,
+        bounciness: 5
+      }).start();
+    } else {
+      Animated.timing(slideAnim, {
+        toValue: 500,
+        duration: 300,
+        useNativeDriver: true
+      }).start();
+    }
+  }, [modalVisible]);
+
   // RENDER
   // Hiển thị thông báo khi không có dữ liệu
   if (!regions || regions.length === 0) {
@@ -190,7 +210,16 @@ export default function MapScreen({ navigation }: { navigation: any }) {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalView}>
+        <Animated.View 
+          style={[
+            styles.modalView,
+            {
+              transform: [{
+                translateY: slideAnim
+              }]
+            }
+          ]}
+        >
           <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setModalVisible(false)}
@@ -208,7 +237,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
               </View>
             ))}
           </ScrollView>
-        </View>
+        </Animated.View>
       </Modal>
 
       {/* Nút refresh */}
