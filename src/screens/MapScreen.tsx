@@ -233,6 +233,7 @@ export default function MapScreen({ navigation }: { navigation: any }) {
                   recipe={recipe}
                   onSave={() => handleSaveRecipe(recipe)}
                   showActions={true}
+                  showReviews={true}
                 />
               </View>
             ))}

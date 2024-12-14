@@ -1,13 +1,23 @@
 // Định nghĩa các kiểu dữ liệu (types và interfaces) dùng chung trong ứng dụng
+import { Timestamp } from 'firebase/firestore';
 
-// Thông tin một công thức nấu ăn
+// Tách thành 2 interface riêng
+export interface BaseRecipe {
+  id: string;
+  name: string;
+  region: string;
+  image: string;
+  ingredients: string[];
+  instructions: string[];
+}
+
 export interface Recipe {
-  id: string;           // ID định danh duy nhất
-  name: string;         // Tên món ăn
-  region: string;       // Vùng miền
-  image: string;        // URL hình ảnh món ăn
-  ingredients: string[];    // Danh sách nguyên liệu
-  instructions: string[];   // Các bước thực hiện
+  id: string;
+  name: string;
+  region: string;
+  image: string;
+  ingredients: string[];
+  instructions: string[];
 }
 
 // Thông tin một vùng miền
@@ -25,4 +35,21 @@ export interface Region {
 export interface ValidationState {
   email: boolean;       // Trạng thái hợp lệ của email
   password: boolean;    // Trạng thái hợp lệ của mật khẩu
+}
+
+// Thêm interface Review
+export interface Review {
+  id: string;
+  recipeId: string; 
+  userId: string;
+  rating: number;
+  comment: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+export interface RecipeStats {
+  id: string; // trùng với recipeId
+  averageRating: number;
+  totalReviews: number;
 } 

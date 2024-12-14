@@ -14,9 +14,10 @@ import { Recipe } from "../types";
 import { getSavedRecipes, removeRecipe } from "../utils/storage";
 import { useRecipes } from "../context/RecipeContext";
 import { SearchBar } from "../components/SearchBar";
-import { Image } from 'expo-image';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image } from "expo-image";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { RecipeCardSkeleton } from "../components/RecipeCardSkeleton";
+import { RecipeCard } from "../components/RecipeCard";
 
 export default function MenuScreen() {
   // HOOKS & STATE
@@ -133,10 +134,10 @@ export default function MenuScreen() {
       <ScrollView
         style={styles.recipeList}
         refreshControl={
-          <RefreshControl 
+          <RefreshControl
             refreshing={isRefreshing}
             onRefresh={refreshSavedRecipes}
-            colors={['#007AFF']}
+            colors={["#007AFF"]}
             tintColor="#007AFF"
           />
         }
@@ -161,47 +162,12 @@ export default function MenuScreen() {
           // Hiển thị danh sách công thức đã được lọc
           filteredRecipes.map((recipe) => (
             <View key={recipe.id} style={styles.recipeCard}>
-              <Image
-                source={{ uri: recipe.image }}
-                style={styles.recipeImage}
-                contentFit="cover"
-                transition={1000}
+              <RecipeCard
+                recipe={recipe}
+                onDelete={() => handleDeleteRecipe(recipe)}
+                showActions={true}
+                showReviews={true}
               />
-
-              <View style={styles.recipeInfo}>
-                <Text style={styles.recipeName}>{recipe.name}</Text>
-                <View style={styles.regionBadge}>
-                  <Ionicons name="location" size={16} color="#666" />
-                  <Text style={styles.regionName}>{recipe.region}</Text>
-                </View>
-
-                <Text style={styles.sectionTitle}>Nguyên liệu:</Text>
-                <View style={styles.ingredientsList}>
-                  {recipe.ingredients.map((ingredient, index) => (
-                    <View key={index} style={styles.ingredientItem}>
-                      <Text style={styles.listItem}>• {ingredient}</Text>
-                    </View>
-                  ))}
-                </View>
-
-                <Text style={styles.sectionTitle}>Cách làm:</Text>
-                <View style={styles.instructionsList}>
-                  {recipe.instructions.map((instruction, index) => (
-                    <View key={index} style={styles.instructionItem}>
-                      <Text style={styles.stepNumber}>{index + 1}</Text>
-                      <Text style={styles.instructionText}>{instruction}</Text>
-                    </View>
-                  ))}
-                </View>
-
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => handleDeleteRecipe(recipe)}
-                >
-                  <Ionicons name="trash-outline" size={20} color="white" />
-                  <Text style={styles.deleteButtonText}>Xóa công thức</Text>
-                </TouchableOpacity>
-              </View>
             </View>
           ))
         )}
@@ -273,11 +239,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
 
   recipeImage: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
 
@@ -289,23 +255,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 8,
-    color: '#333',
+    color: "#333",
   },
 
   regionBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 15,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginBottom: 15,
   },
 
   regionName: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginLeft: 5,
   },
 
@@ -314,18 +280,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: 15,
     marginBottom: 10,
-    color: '#444',
+    color: "#444",
   },
 
   ingredientsList: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     padding: 10,
     borderRadius: 8,
   },
 
   ingredientItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
 
@@ -334,42 +300,42 @@ const styles = StyleSheet.create({
   },
 
   instructionItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 10,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
 
   stepNumber: {
-    backgroundColor: '#007AFF',
-    color: 'white',
+    backgroundColor: "#007AFF",
+    color: "white",
     width: 24,
     height: 24,
     borderRadius: 12,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 24,
     marginRight: 10,
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 
   instructionText: {
     flex: 1,
     fontSize: 14,
     lineHeight: 20,
-    color: '#444',
+    color: "#444",
   },
 
   listItem: {
     fontSize: 14,
     marginBottom: 5,
-    color: '#666',
+    color: "#666",
   },
 
   deleteButton: {
     backgroundColor: "#ff4444",
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 12,
     borderRadius: 8,
     marginTop: 15,

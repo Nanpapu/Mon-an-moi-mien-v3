@@ -1,7 +1,9 @@
 import { db } from '../config/firebase';
-import { collection, getDocs, doc, getDoc, query, where, setDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where, setDoc, addDoc, Timestamp } from 'firebase/firestore';
 import { Region, Recipe } from '../types';
 import { regions } from '../data/regions';
+import { recipeStats } from '../data/recipeStats';
+import { reviews } from '../data/reviews';
 
 export const RegionService = {
   // Lấy tất cả vùng miền
@@ -56,22 +58,38 @@ export const RegionService = {
 
   importDataToFirestore: async () => {
     try {
-      // Import regions
+      // Import regions và recipes
       for (const region of regions) {
         const { recipes: regionRecipes, ...regionData } = region;
         
+        // Import region
         await setDoc(doc(db, 'regions', region.id), {
           id: region.id,
           name: region.name,
           coordinate: region.coordinate
         });
         
+        // Import recipes
         for (const recipe of regionRecipes) {
           await setDoc(doc(db, 'recipes', recipe.id), {
             ...recipe,
             regionId: region.id
           });
         }
+      }
+
+      // Import recipeStats
+      for (const stat of recipeStats) {
+        await setDoc(doc(db, 'recipeStats', stat.id), stat);
+      }
+
+      // Import reviews (nếu có)
+      for (const review of reviews) {
+        await addDoc(collection(db, 'reviews'), {
+          ...review,
+          createdAt: Timestamp.fromDate(review.createdAt),
+          updatedAt: Timestamp.fromDate(review.updatedAt)
+        });
       }
       
       console.log('Import dữ liệu thành công!');
