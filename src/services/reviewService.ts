@@ -131,18 +131,24 @@ export const ReviewService = {
     comment: string
   ): Promise<void> => {
     try {
+      const reviewRef = doc(db, "reviews", reviewId);
+      const reviewDoc = await getDoc(reviewRef);
+
+      if (!reviewDoc.exists()) {
+        throw new Error("Không tìm thấy đánh giá");
+      }
+
+      const oldRating = reviewDoc.data().rating;
+
       await runTransaction(db, async (transaction) => {
-        // Đọc review hiện tại
-        const reviewRef = doc(db, "reviews", reviewId);
-        const reviewDoc = await transaction.get(reviewRef);
+        // Cập nhật review
+        transaction.update(reviewRef, {
+          rating,
+          comment,
+          updatedAt: Timestamp.now(),
+        });
 
-        if (!reviewDoc.exists()) {
-          throw new Error("Không tìm thấy đánh giá");
-        }
-
-        const oldRating = reviewDoc.data().rating;
-
-        // Đọc recipe
+        // Cập nhật averageRating của recipe
         const recipeRef = doc(db, "recipes", recipeId);
         const recipeDoc = await transaction.get(recipeRef);
 
@@ -154,13 +160,6 @@ export const ReviewService = {
         const currentTotal = recipeData.averageRating * recipeData.totalReviews;
         const newTotal = currentTotal - oldRating + rating;
         const newAverageRating = newTotal / recipeData.totalReviews;
-
-        // Thực hiện tất cả writes sau khi đã đọc xong
-        transaction.update(reviewRef, {
-          rating,
-          comment,
-          updatedAt: Timestamp.now(),
-        });
 
         transaction.update(recipeRef, {
           averageRating: newAverageRating,
