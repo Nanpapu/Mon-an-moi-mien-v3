@@ -52,4 +52,12 @@ export interface RecipeStats {
   id: string; // trùng với recipeId
   averageRating: number;
   totalReviews: number;
+}
+
+// Thông tin người dùng
+export interface User {
+  uid: string;
+  displayName: string | null;
+  photoURL: string | null;
+  email: string | null;
 } 

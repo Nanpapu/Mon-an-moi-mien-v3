@@ -12,11 +12,14 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { ImportButton } from "../components/ImportButton";
 import { RegionService } from "../services/regionService";
+import * as ImagePicker from 'expo-image-picker';
+import { UserService } from '../services/userService';
 
 export default function ProfileScreen() {
   // HOOKS & STATE
