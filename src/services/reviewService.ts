@@ -167,4 +167,30 @@ export const ReviewService = {
       throw new Error(error.message);
     }
   },
+
+  getRecipeStats: async (recipeId: string) => {
+    try {
+      const statsRef = doc(db, 'recipeStats', recipeId);
+      const statsDoc = await getDoc(statsRef);
+      
+      if (!statsDoc.exists()) {
+        return {
+          averageRating: 0,
+          totalReviews: 0
+        };
+      }
+
+      const data = statsDoc.data();
+      return {
+        averageRating: data.averageRating || 0,
+        totalReviews: data.totalReviews || 0
+      };
+    } catch (error) {
+      console.error('Lỗi khi lấy thống kê:', error);
+      return {
+        averageRating: 0,
+        totalReviews: 0
+      };
+    }
+  }
 };
