@@ -238,4 +238,31 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
   },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '80%',
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 10,
+  },
+  viewReviewsButton: {
+    marginTop: 10,
+    padding: 8,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  viewReviewsText: {
+    color: '#007AFF',
+    fontSize: 14,
+  },
 });

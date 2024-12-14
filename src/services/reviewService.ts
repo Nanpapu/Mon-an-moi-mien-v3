@@ -10,6 +10,7 @@ import {
   where,
   Timestamp,
   runTransaction,
+  orderBy,
 } from "firebase/firestore";
 import { Review } from "../types";
 
@@ -107,7 +108,8 @@ export const ReviewService = {
     try {
       const q = query(
         collection(db, "reviews"),
-        where("recipeId", "==", recipeId)
+        where("recipeId", "==", recipeId),
+        orderBy("createdAt", "desc")
       );
 
       const querySnapshot = await getDocs(q);
@@ -170,27 +172,21 @@ export const ReviewService = {
 
   getRecipeStats: async (recipeId: string) => {
     try {
-      const statsRef = doc(db, 'recipeStats', recipeId);
-      const statsDoc = await getDoc(statsRef);
+      const recipeRef = doc(db, "recipes", recipeId);
+      const recipeDoc = await getDoc(recipeRef);
       
-      if (!statsDoc.exists()) {
-        return {
-          averageRating: 0,
-          totalReviews: 0
-        };
+      if (!recipeDoc.exists()) {
+        return { averageRating: 0, totalReviews: 0 };
       }
-
-      const data = statsDoc.data();
+      
+      const data = recipeDoc.data();
       return {
         averageRating: data.averageRating || 0,
         totalReviews: data.totalReviews || 0
       };
     } catch (error) {
       console.error('Lỗi khi lấy thống kê:', error);
-      return {
-        averageRating: 0,
-        totalReviews: 0
-      };
+      return { averageRating: 0, totalReviews: 0 };
     }
   }
 };
