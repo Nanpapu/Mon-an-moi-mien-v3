@@ -29,6 +29,7 @@ export function RecipeCard({
   const [modalVisible, setModalVisible] = useState(false);
   const [stats, setStats] = useState({ averageRating: 0, totalReviews: 0 });
   const [existingReview, setExistingReview] = useState<any>(null);
+  const [showReviewsList, setShowReviewsList] = useState(false);
 
   // Load thông tin đánh giá nếu showReviews = true
   useEffect(() => {
@@ -102,6 +103,14 @@ export function RecipeCard({
                 {stats.averageRating.toFixed(1)} ({stats.totalReviews} đánh giá)
               </Text>
             </View>
+            
+            <TouchableOpacity 
+              style={styles.viewReviewsButton}
+              onPress={() => setShowReviewsList(true)}
+            >
+              <Text style={styles.viewReviewsText}>Xem tất cả đánh giá</Text>
+            </TouchableOpacity>
+
             {user && (
               <TouchableOpacity 
                 style={styles.reviewButton}
@@ -214,10 +223,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginVertical: 10,
+    marginTop: 10,
+    flexDirection: 'column',
+    gap: 8,
   },
   stars: {
     flexDirection: 'row',
@@ -230,9 +238,9 @@ const styles = StyleSheet.create({
   },
   reviewButton: {
     backgroundColor: '#007AFF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
+    padding: 8,
+    borderRadius: 5,
+    alignItems: 'center',
   },
   reviewButtonText: {
     color: 'white',
@@ -255,9 +263,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   viewReviewsButton: {
-    marginTop: 10,
-    padding: 8,
     backgroundColor: '#f0f0f0',
+    padding: 8,
     borderRadius: 5,
     alignItems: 'center',
   },
