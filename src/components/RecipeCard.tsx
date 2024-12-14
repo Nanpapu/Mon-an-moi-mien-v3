@@ -1,13 +1,14 @@
 // Component hiển thị thông tin chi tiết của một công thức nấu ăn
 // Bao gồm hình ảnh, tên món, vùng miền, nguyên liệu và cách làm
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { Image } from "expo-image";
-import { Recipe } from "../types";
+import { Recipe, Review } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { ReviewService } from "../services/reviewService";
 import { Ionicons } from "@expo/vector-icons";
 import { ReviewModal } from "./ReviewModal";
+import { ReviewsList } from './ReviewsList';
 
 // Props của component
 interface Props {
@@ -31,13 +32,16 @@ export function RecipeCard({
   const [existingReview, setExistingReview] = useState<any>(null);
   const [showReviewsList, setShowReviewsList] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
 
   // Load thông tin đánh giá nếu showReviews = true
   useEffect(() => {
     if (showReviews) {
       const loadReviewData = async () => {
         const recipeStats = await ReviewService.getRecipeStats(recipe.id);
+        const reviews = await ReviewService.getRecipeReviews(recipe.id);
         setStats(recipeStats);
+        setAllReviews(reviews);
         if (user) {
           const review = await ReviewService.getUserReviewForRecipe(recipe.id, user.uid);
           setExistingReview(review);
@@ -64,7 +68,7 @@ export function RecipeCard({
         <View style={[styles.header, showDetails && { borderBottomWidth: 1, borderBottomColor: '#e1e1e1' }]}>
           <View>
             <Text style={styles.name}>{recipe.name}</Text>
-            <Text style={styles.region}>Vùng mi��n: {recipe.region}</Text>
+            <Text style={styles.region}>Vùng miền: {recipe.region}</Text>
           </View>
           
           <TouchableOpacity 
@@ -79,7 +83,7 @@ export function RecipeCard({
           </TouchableOpacity>
         </View>
 
-        {/* Phần chi tiết có thể ẩn/hiện */}
+        {/* Phần chi tiết c�� thể ẩn/hiện */}
         {showDetails && (
           <View style={styles.details}>
             <Text style={styles.sectionTitle}>Nguyên liệu:</Text>
@@ -173,6 +177,32 @@ export function RecipeCard({
           }}
         />
       )}
+
+      <Modal
+        visible={showReviewsList}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowReviewsList(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Đánh giá</Text>
+              <TouchableOpacity 
+                onPress={() => setShowReviewsList(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <ReviewsList
+              reviews={allReviews}
+              averageRating={stats.averageRating}
+              totalReviews={stats.totalReviews}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -349,5 +379,37 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#007AFF',
     fontWeight: '500',
+  },
+
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '80%',
+  },
+
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e1e1e1',
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+
+  closeButton: {
+    padding: 4,
   },
 });
