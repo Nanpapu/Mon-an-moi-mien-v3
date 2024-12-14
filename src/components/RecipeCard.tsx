@@ -97,30 +97,42 @@ export function RecipeCard({
 
         {showReviews && (
           <View style={styles.ratingContainer}>
-            <View style={styles.stars}>
-              <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.ratingText}>
-                {stats.averageRating.toFixed(1)} ({stats.totalReviews} đánh giá)
-              </Text>
+            <View style={styles.ratingHeader}>
+              <View style={styles.ratingScore}>
+                <Text style={styles.averageRating}>{stats.averageRating.toFixed(1)}</Text>
+                <View style={styles.starsRow}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Ionicons
+                      key={star}
+                      name={star <= stats.averageRating ? "star" : "star-outline"}
+                      size={16}
+                      color="#FFD700"
+                    />
+                  ))}
+                </View>
+                <Text style={styles.totalReviews}>{stats.totalReviews} đánh giá</Text>
+              </View>
+              
+              {user && (
+                <TouchableOpacity 
+                  style={styles.addReviewButton}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <Ionicons name={existingReview ? "create" : "add"} size={20} color="white" />
+                  <Text style={styles.addReviewText}>
+                    {existingReview ? 'Sửa đánh giá' : 'Đánh giá'}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
-            
+
             <TouchableOpacity 
-              style={styles.viewReviewsButton}
+              style={styles.viewAllButton}
               onPress={() => setShowReviewsList(true)}
             >
-              <Text style={styles.viewReviewsText}>Xem tất cả đánh giá</Text>
+              <Text style={styles.viewAllText}>Xem tất cả đánh giá</Text>
+              <Ionicons name="chevron-forward" size={20} color="#007AFF" />
             </TouchableOpacity>
-
-            {user && (
-              <TouchableOpacity 
-                style={styles.reviewButton}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={styles.reviewButtonText}>
-                  {existingReview ? 'Sửa đánh giá' : 'Đánh giá'}
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
         )}
       </View>
@@ -223,53 +235,69 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   ratingContainer: {
-    marginTop: 10,
-    flexDirection: 'column',
-    gap: 8,
+    marginTop: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 15,
   },
-  stars: {
+
+  ratingHeader: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 4,
+    marginBottom: 12,
   },
-  ratingText: {
-    fontSize: 14,
+
+  ratingScore: {
+    alignItems: 'center',
+  },
+
+  averageRating: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+  },
+
+  starsRow: {
+    flexDirection: 'row',
+    gap: 2,
+    marginVertical: 4,
+  },
+
+  totalReviews: {
+    fontSize: 12,
     color: '#666',
   },
-  reviewButton: {
-    backgroundColor: '#007AFF',
-    padding: 8,
-    borderRadius: 5,
+
+  addReviewButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
   },
-  reviewButtonText: {
+
+  addReviewText: {
     color: 'white',
     fontSize: 14,
+    fontWeight: '500',
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    maxHeight: '80%',
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    padding: 10,
-  },
-  viewReviewsButton: {
-    backgroundColor: '#f0f0f0',
-    padding: 8,
-    borderRadius: 5,
+
+  viewAllButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e1e1e1',
+    marginTop: 4,
   },
-  viewReviewsText: {
-    color: '#007AFF',
+
+  viewAllText: {
     fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '500',
   },
 });
